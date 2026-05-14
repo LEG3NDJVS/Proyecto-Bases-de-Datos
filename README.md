@@ -1,4 +1,4 @@
-# 🎮 Chocolate-Doom Telemetry & UX Database
+# 🎮 Doom Telemetry & UX Database
 
 Proyecto académico de Bases de Datos enfocado en el diseño e implementación de una base de datos relacional para el análisis de telemetría en partidas de DOOM 🕹️ y métricas de experiencia de usuario (UX) 📊.
 
