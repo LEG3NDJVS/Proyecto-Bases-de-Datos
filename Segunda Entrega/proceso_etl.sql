@@ -23,7 +23,6 @@ CREATE TEMP TABLE staging_telemetria (
 );
 
 -- 2. Cargamos los datos crudos del archivo a la tabla de staging
--- NOTA: Asegúrate de que la ruta coincida con la ubicación de tu archivo en tu PC
 COPY staging_telemetria 
 FROM '/home/jubotero/3erSemestre/proyecto_basesdedatos/telemetria_muestra.tsv' 
 DELIMITER E'\t' CSV HEADER;
