@@ -1,5 +1,3 @@
-TRUNCATE TABLE participante_partida, partida, evento_telemetria, sector, mapa, episodio, jugador, usuario CASCADE;
-
 -- 1. Insertar 3 Episodios
 INSERT INTO episodio (id_episodio, codigo_episodio, nombre_episodio) VALUES 
 (1, 'E1', 'Knee-Deep in the Dead'),
