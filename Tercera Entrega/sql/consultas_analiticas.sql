@@ -91,20 +91,39 @@ GROUP BY j.nickname, ru.id_respuesta, ru.observacion
 ORDER BY puntaje_ux_promedio DESC;
 
 -- Consulta 5: Sector más visitado (punto caliente) por episodio/mapa
+WITH visitas_sector AS (
+    SELECT 
+        e.codigo_episodio,
+        e.nombre_episodio,
+        m.id_mapa,
+        m.cod_mapa,
+        m.nombre_mapa,
+        s.cod_sector,
+        COUNT(*) AS visitas
+    FROM evento_telemetria et
+    JOIN sector s ON s.id_sector = et.id_sector
+    JOIN mapa m ON m.id_mapa = s.id_mapa
+    JOIN episodio e ON e.id_episodio = m.id_episodio
+    GROUP BY e.codigo_episodio, e.nombre_episodio, m.id_mapa, m.cod_mapa, m.nombre_mapa, s.cod_sector
+),
+total_por_mapa AS (
+    SELECT 
+        id_mapa,
+        SUM(visitas) AS total_visitas
+    FROM visitas_sector
+    GROUP BY id_mapa
+)
 SELECT 
-    e.codigo_episodio,
-    e.nombre_episodio,
-    m.cod_mapa,
-    m.nombre_mapa,
-    s.cod_sector,
-    COUNT(*) AS visitas,
-    ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (PARTITION BY m.id_mapa), 1) AS porcentaje_en_mapa
-FROM evento_telemetria et
-JOIN sector s ON s.id_sector = et.id_sector
-JOIN mapa m ON m.id_mapa = s.id_mapa
-JOIN episodio e ON e.id_episodio = m.id_episodio
-GROUP BY e.codigo_episodio, e.nombre_episodio, m.cod_mapa, m.nombre_mapa, m.id_mapa, s.cod_sector
-ORDER BY e.codigo_episodio, m.cod_mapa, visitas DESC;
+    vs.codigo_episodio,
+    vs.nombre_episodio,
+    vs.cod_mapa,
+    vs.nombre_mapa,
+    vs.cod_sector,
+    vs.visitas,
+    ROUND(100.0 * vs.visitas / tm.total_visitas, 1) AS porcentaje_en_mapa
+FROM visitas_sector vs
+JOIN total_por_mapa tm ON tm.id_mapa = vs.id_mapa
+ORDER BY vs.codigo_episodio, vs.cod_mapa, vs.visitas DESC;
 
 -- Consulta 6: Número de tics de co-presencia en un mismo sector
 SELECT 
